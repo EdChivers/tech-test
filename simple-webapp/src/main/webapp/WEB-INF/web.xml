@@ -6,6 +6,11 @@
     <servlet>
         <servlet-name>FormProcessingServlet</servlet-name>
         <servlet-class>edchivers.webapp.FormProcessingServlet</servlet-class>
+        
+        <init-param>
+        	<param-name>dataStore</param-name>
+        	<param-value>edchivers.webapp.io.FileBackedDataStore</param-value>
+        </init-param>
     </servlet>
     <servlet-mapping>
         <servlet-name>FormProcessingServlet</servlet-name>
