@@ -13,8 +13,6 @@
         <%
         	List<Person> people = (List<Person>) request.getAttribute("FORM_DATA");
         
-        	System.out.println("size of people data " + people.size());
-        
         	for (Person p : people)
         	{
         %>
