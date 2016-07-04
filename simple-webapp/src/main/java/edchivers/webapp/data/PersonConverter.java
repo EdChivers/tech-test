@@ -37,5 +37,20 @@ public class PersonConverter {
 		return people;
 	}
 
-	
+	public static Properties convertPersonListToProperties(List<Person> personList)
+	{
+		Properties prop = new Properties();
+		
+		if (personList != null)
+		{
+			for (int i = 0 ; i < personList.size(); i++)
+			{
+				Person p = personList.get(i);
+				prop.setProperty(String.valueOf(i) + FIRST_NAME_SUFFIX, p.getFirstName());
+				prop.setProperty(String.valueOf(i) + LAST_NAME_SUFFIX, p.getLastName());
+			}
+		}
+
+		return prop;
+	}	
 }

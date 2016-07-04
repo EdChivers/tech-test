@@ -14,7 +14,7 @@ public class PersonConverterTest {
 	@Test
 	public void testConvertPropertiesToPersonList_SampleInput_ListIsCorrectLength()
 	{
-		Properties p = getSampleInput();
+		Properties p = getSampleProperties();
 		
 		int expectedLength = p.size() / 2;
 		
@@ -26,7 +26,7 @@ public class PersonConverterTest {
 	@Test
 	public void testConvertPropertiesToPersonList_SampleInputPlusUnrelatedData_ListIsCorrectLength()
 	{
-		Properties p = getSampleInput();
+		Properties p = getSampleProperties();
 		
 		int expectedLength = p.size() / 2;
 		
@@ -40,7 +40,7 @@ public class PersonConverterTest {
 	@Test
 	public void testConvertPropertiesToPersonList_SampleInputPlusInvalidData_ListIsCorrectLength()
 	{
-		Properties p = getSampleInput();
+		Properties p = getSampleProperties();
 		
 		int expectedLength = p.size() / 2;
 		
@@ -56,30 +56,30 @@ public class PersonConverterTest {
 	@Test
 	public void testConvertPropertiesToPersonList_SampleInput_ListContainsExpectedData()
 	{
-		Properties p = getSampleInput();
+		Properties p = getSampleProperties();
 		
 		List<Person> people = PersonConverter.convertPropertiesToPersonList(p);
 		
-		Assert.assertTrue("List contained unexpected data!", people.containsAll(getExpectedPersonList()));
+		Assert.assertTrue("List contained unexpected data!", people.containsAll(getSamplePersonList()));
 	}
 
 	@Test
 	public void testConvertPropertiesToPersonList_SampleInputPlusUnrelatedData_ListContainsExpectedData()
 	{
-		Properties p = getSampleInput();
+		Properties p = getSampleProperties();
 		
 		p.setProperty("unrelated.field", "unrelated.value");
 		
 		List<Person> people = PersonConverter.convertPropertiesToPersonList(p);
 		
-		Assert.assertTrue("List contained unexpected data!", people.containsAll(getExpectedPersonList()));
+		Assert.assertTrue("List contained unexpected data!", people.containsAll(getSamplePersonList()));
 	}
 
 	
 	@Test
 	public void testConvertPropertiesToPersonList_SampleInputPlusInvalidData_ListContainsExpectedData()
 	{
-		Properties p = getSampleInput();
+		Properties p = getSampleProperties();
 		
 		//note these are not a matching pair so should be ignored
 		p.setProperty("12345.firstname", "firstname");
@@ -87,10 +87,34 @@ public class PersonConverterTest {
 		
 		List<Person> people = PersonConverter.convertPropertiesToPersonList(p);
 		
-		Assert.assertTrue("List contained unexpected data!", people.containsAll(getExpectedPersonList()));		
+		Assert.assertTrue("List contained unexpected data!", people.containsAll(getSamplePersonList()));		
+	}
+
+	@Test
+	public void testConvertPersonListToProperties_SampleInput_PropertiesIsCorrectSize()
+	{
+		List<Person> people = getSamplePersonList();
+		
+		int expectedSize = people.size() * 2;
+		
+		Properties props = PersonConverter.convertPersonListToProperties(people);
+		
+		Assert.assertEquals("Properties was not the expected size!", expectedSize, props.size());		
+	}
+
+	@Test
+	public void testConvertPersonListToProperties_SampleInput_PropertiesContainsExpectedData()
+	{
+		List<Person> people = getSamplePersonList();
+		
+		int expectedSize = people.size() * 2;
+		
+		Properties props = PersonConverter.convertPersonListToProperties(people);
+		
+		Assert.assertEquals("Properties did not contain the expected data!", getSampleProperties(), props);		
 	}
 	
-	private List<Person> getExpectedPersonList()
+	private List<Person> getSamplePersonList()
 	{
 		List<Person> people = new ArrayList<Person>();
 		
@@ -102,21 +126,21 @@ public class PersonConverterTest {
 		return people;
 	}
 	
-	private Properties getSampleInput()
+	private Properties getSampleProperties()
 	{
 		Properties p = new Properties();
 		
-		p.setProperty("1.firstName", "Fred");
-		p.setProperty("1.lastName", "Jones");
+		p.setProperty("0.firstName", "Fred");
+		p.setProperty("0.lastName", "Jones");
 
-		p.setProperty("2.firstName", "Bob");
-		p.setProperty("2.lastName", "Smith");
+		p.setProperty("1.firstName", "Bob");
+		p.setProperty("1.lastName", "Smith");
 		
-		p.setProperty("3.firstName", "Claire");
-		p.setProperty("3.lastName", "Wright");
+		p.setProperty("2.firstName", "Claire");
+		p.setProperty("2.lastName", "Wright");
 		
-		p.setProperty("4.firstName", "Sarah");
-		p.setProperty("4.lastName", "Thompson");
+		p.setProperty("3.firstName", "Sarah");
+		p.setProperty("3.lastName", "Thompson");
 		
 		return p;
 	}
