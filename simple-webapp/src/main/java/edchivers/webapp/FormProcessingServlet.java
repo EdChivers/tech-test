@@ -12,6 +12,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 
@@ -25,8 +26,12 @@ public class FormProcessingServlet extends HttpServlet {
 	public static final String LAST_NAME_PARAM = "people[][surname]";
 	public static final String DATA_STORE_INIT_PARAM = "dataStore";
 	
+	public static final String DATA_PARAM = "FORM_DATA";
+	
 	public void init(ServletConfig config) throws ServletException
 	{
+		super.init(config);
+		
 		try {
 
 			String dataStoreType = config.getInitParameter(DATA_STORE_INIT_PARAM);
@@ -48,26 +53,36 @@ public class FormProcessingServlet extends HttpServlet {
 		String[] lastNames = req.getParameterValues(LAST_NAME_PARAM);
 		
 		List<Person> updatedData = writeFormData(firstNames, lastNames);
-    			
+		
+		forwardData(req, resp, updatedData);
     }
     
     protected void doGet(HttpServletRequest req, HttpServletResponse resp)
             throws ServletException, IOException
     {
- 
-    	// TODO this should read data
-		throw new ServletException("not implemented yet, sorry!");
-    			
+    	List<Person> peopleFromStore = this.dataStore.readData();
+    	
+    	forwardData(req, resp, peopleFromStore);
+    	
+    }
+    
+    private void forwardData(HttpServletRequest request, HttpServletResponse response, List<Person> people) throws ServletException, IOException
+    {
+    	//forward data to JSP for output
+    	request.setAttribute(DATA_PARAM, people);
+    	RequestDispatcher dispatcher = getServletContext().getRequestDispatcher("/dataform.jsp");
+        dispatcher.forward(request, response); 
     }
 
 	
 	private List<Person> writeFormData(String[] firstNames, String[] lastNames) throws IllegalArgumentException, IOException
 	{		
-		List<Person> people = new ArrayList<Person>();
+		List<Person> storeData = new ArrayList<Person>();
 
 		
 		if (dataValidator.validate(firstNames, lastNames))
 		{
+			List<Person> people = new ArrayList<Person>();
 			// assumption : arrays are the same length
 			// this is reasonable as this is part of our validation criteria
 			for (int i=0; i < firstNames.length; i ++)
@@ -79,18 +94,14 @@ public class FormProcessingServlet extends HttpServlet {
 			}
 			
 			// write to store
-			List<Person> updatedStoreData = this.dataStore.writeData(people);
+			storeData = this.dataStore.writeData(people);
 			
-			if (updatedStoreData != null && updatedStoreData.size() > 0)
-			{
-				people.addAll(updatedStoreData);
-			}
 		}
 		else
 		{
 			throw new IllegalArgumentException("Data not valid");
 		}
 		
-		return people;
+		return storeData;
 	}
 }
