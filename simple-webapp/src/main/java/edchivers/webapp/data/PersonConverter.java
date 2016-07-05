@@ -1,9 +1,11 @@
 package edchivers.webapp.data;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Properties;
+import java.util.Set;
 
 public class PersonConverter {
 
@@ -14,12 +16,16 @@ public class PersonConverter {
 	{
 		List<Person> people = new ArrayList<Person>();
 		
-		Iterator<String> propertyIterator = prop.stringPropertyNames().iterator();
+		//These next few lines ensure that the generated list is ordered by the
+		//property key names. Probably a better way to do this.		
 		
-		while (propertyIterator.hasNext())
+		Set<String> propertyNames = prop.stringPropertyNames();
+		ArrayList<String> propertyList = new ArrayList<String>(propertyNames);
+		Collections.sort(propertyList);
+		
+		for (String property : propertyList)
 		{
-			String property = propertyIterator.next();
-			
+
 			if (property.endsWith(FIRST_NAME_SUFFIX))
 			{
 				String firstNameProperty = property;
