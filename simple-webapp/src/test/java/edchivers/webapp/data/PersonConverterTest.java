@@ -24,6 +24,38 @@ public class PersonConverterTest {
 	}
 
 	@Test
+	public void testConvertPropertiesToPersonList_PersonWithOnlyFirstName_PersonIsPresentInList()
+	{
+		String firstName = "Bob";
+		String lastName = "";
+		Properties p = new Properties();
+		p.setProperty("0.firstName", firstName);
+		
+		List<Person> expectedPeople = new ArrayList<Person>();
+		expectedPeople.add(new Person(firstName, lastName));
+		
+		List<Person> people = PersonConverter.convertPropertiesToPersonList(p);
+		
+		Assert.assertEquals("List was not the expected length!", expectedPeople, people);		
+	}
+
+	@Test
+	public void testConvertPropertiesToPersonList_PersonWithOnlyLastName_PersonIsPresentInList()
+	{
+		String firstName = "";
+		String lastName = "Smith";
+		Properties p = new Properties();
+		p.setProperty("0.lastName", lastName);
+		
+		List<Person> expectedPeople = new ArrayList<Person>();
+		expectedPeople.add(new Person(firstName, lastName));
+		
+		List<Person> people = PersonConverter.convertPropertiesToPersonList(p);
+		
+		Assert.assertEquals("List was not the expected length!", expectedPeople, people);		
+	}
+	
+	@Test
 	public void testConvertPropertiesToPersonList_SampleInputPlusUnrelatedData_ListIsCorrectLength()
 	{
 		Properties p = getSampleProperties();
@@ -124,6 +156,35 @@ public class PersonConverterTest {
 		
 		Assert.assertEquals("Conversion did not ignore people with blank first and last names!", expectedSize, props.size());		
 	}
+
+	@Test
+	public void testConvertPersonListToProperties_BlankLastName_FirstNameInProperties()
+	{
+		List<Person> people = new ArrayList<Person>();
+		people.add(new Person("Tom",""));
+		
+		//should just contain the first name
+		int expectedSize = 1;
+		
+		Properties props = PersonConverter.convertPersonListToProperties(people);
+		
+		Assert.assertEquals("Unexpected number of properties!", expectedSize, props.size());		
+	}
+
+	@Test
+	public void testConvertPersonListToProperties_BlankFirstName_LastNameInProperties()
+	{
+		List<Person> people = new ArrayList<Person>();
+		people.add(new Person("","Smith"));
+		
+		// should just be the last name
+		int expectedSize = 1;
+		
+		Properties props = PersonConverter.convertPersonListToProperties(people);
+		
+		Assert.assertEquals("Conversion did not ignore people with blank first and last names!", expectedSize, props.size());		
+	}
+
 	
 	private List<Person> getSamplePersonList()
 	{

@@ -23,19 +23,37 @@ public class PersonConverter {
 		ArrayList<String> propertyList = new ArrayList<String>(propertyNames);
 		Collections.sort(propertyList);
 		
+		//this allows us to keep a list of all IDs processed so far
+		List<String> processedIds = new ArrayList<String>();
+		
 		for (String property : propertyList)
 		{
-
 			if (property.endsWith(FIRST_NAME_SUFFIX))
-			{
-				String firstNameProperty = property;
-				
+			{	
 				String id = property.substring(0, property.lastIndexOf(FIRST_NAME_SUFFIX));
-				String lastNameProperty = id + LAST_NAME_SUFFIX;
 				
-				if (prop.containsKey(lastNameProperty))
+				if (!processedIds.contains(id))
 				{
-					people.add(new Person(prop.getProperty(firstNameProperty), prop.getProperty(lastNameProperty)));
+					String firstName = prop.getProperty(property);
+					// person may not have a last name, in this case pad to empty String
+					String lastName = padNullData(prop.getProperty(id + LAST_NAME_SUFFIX));
+					
+					people.add(new Person(firstName, lastName));
+					processedIds.add(id);
+				}
+			}
+			else if (property.endsWith(LAST_NAME_SUFFIX))
+			{	
+				String id = property.substring(0, property.lastIndexOf(LAST_NAME_SUFFIX));
+				
+				if (!processedIds.contains(id))
+				{
+					// person may not have a first name, in this case pad to empty String
+					String firstName = padNullData(prop.getProperty(id + FIRST_NAME_SUFFIX));
+					String lastName = prop.getProperty(property);
+					
+					people.add(new Person(firstName, lastName));
+					processedIds.add(id);
 				}
 			}
 		}
@@ -53,12 +71,25 @@ public class PersonConverter {
 			
 			for (Person p : personList)
 			{
-				if (isNotBlank(p.getFirstName()) && isNotBlank(p.getLastName()))
+				boolean personAdded = false;
+				
+				if (isNotBlank(p.getFirstName()))
 				{
-				prop.setProperty(String.valueOf(index) + FIRST_NAME_SUFFIX, p.getFirstName());
-				prop.setProperty(String.valueOf(index) + LAST_NAME_SUFFIX, p.getLastName());
-				index++;
+					prop.setProperty(String.valueOf(index) + FIRST_NAME_SUFFIX, p.getFirstName());
+					personAdded=true;
 				}
+				if (isNotBlank(p.getLastName()))
+				{
+					prop.setProperty(String.valueOf(index) + LAST_NAME_SUFFIX, p.getLastName());
+					personAdded = true;
+				}
+
+				//only update the index if we added data to the properties instance
+				if (personAdded)
+				{
+					index++;
+				}
+				
 			}
 		}
 
@@ -68,5 +99,17 @@ public class PersonConverter {
 	private static boolean isNotBlank(String s)
 	{
 		return s != null && !s.trim().equals("");
+	}
+	
+	private static String padNullData(String s)
+	{
+		String output = s;
+		//pads null data to an empty String
+		if (s == null)
+		{
+			output = "";
+		}
+		
+		return output;
 	}
 }
