@@ -49,14 +49,24 @@ public class PersonConverter {
 		
 		if (personList != null)
 		{
-			for (int i = 0 ; i < personList.size(); i++)
+			int index=0;
+			
+			for (Person p : personList)
 			{
-				Person p = personList.get(i);
-				prop.setProperty(String.valueOf(i) + FIRST_NAME_SUFFIX, p.getFirstName());
-				prop.setProperty(String.valueOf(i) + LAST_NAME_SUFFIX, p.getLastName());
+				if (isNotBlank(p.getFirstName()) && isNotBlank(p.getLastName()))
+				{
+				prop.setProperty(String.valueOf(index) + FIRST_NAME_SUFFIX, p.getFirstName());
+				prop.setProperty(String.valueOf(index) + LAST_NAME_SUFFIX, p.getLastName());
+				index++;
+				}
 			}
 		}
 
 		return prop;
-	}	
+	}
+	
+	private static boolean isNotBlank(String s)
+	{
+		return s != null && !s.trim().equals("");
+	}
 }

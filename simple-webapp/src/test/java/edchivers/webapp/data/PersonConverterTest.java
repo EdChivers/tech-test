@@ -107,11 +107,22 @@ public class PersonConverterTest {
 	{
 		List<Person> people = getSamplePersonList();
 		
-		int expectedSize = people.size() * 2;
-		
 		Properties props = PersonConverter.convertPersonListToProperties(people);
 		
 		Assert.assertEquals("Properties did not contain the expected data!", getSampleProperties(), props);		
+	}
+
+	@Test
+	public void testConvertPersonListToProperties_BlankPersonData_BlankPersonsNotPresentInProperties()
+	{
+		List<Person> people = getSamplePersonList();
+		people.add(new Person("",""));
+		
+		int expectedSize = getSamplePersonList().size() * 2;
+		
+		Properties props = PersonConverter.convertPersonListToProperties(people);
+		
+		Assert.assertEquals("Conversion did not ignore people with blank first and last names!", expectedSize, props.size());		
 	}
 	
 	private List<Person> getSamplePersonList()
