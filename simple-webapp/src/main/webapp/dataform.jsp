@@ -13,6 +13,12 @@
         <%
         	List<Person> people = (List<Person>) request.getAttribute("FORM_DATA");
         
+        	// pad up to a minimum size
+        	while (people.size() < 4)
+        	{
+        		people.add(new Person("",""));
+        	}
+        
         	for (Person p : people)
         	{
         %>
