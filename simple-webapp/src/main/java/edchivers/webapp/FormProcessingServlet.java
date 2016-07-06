@@ -62,12 +62,11 @@ public class FormProcessingServlet extends HttpServlet {
     {
     	List<Person> peopleFromStore = this.dataStore.readData();
     	
-    	forwardData(req, resp, peopleFromStore);
-    	
+    	forwardData(req, resp, peopleFromStore);	
     }
     
     private void forwardData(HttpServletRequest request, HttpServletResponse response, List<Person> people) throws ServletException, IOException
-    {
+    {    	
     	//forward data to JSP for output
     	request.setAttribute(DATA_PARAM, people);
     	RequestDispatcher dispatcher = getServletContext().getRequestDispatcher("/dataform.jsp");
@@ -80,7 +79,8 @@ public class FormProcessingServlet extends HttpServlet {
 		List<Person> storeData = new ArrayList<Person>();
 
 		
-		if (dataValidator.validate(firstNames, lastNames))
+		if (dataValidator.validateArraysSameLength(firstNames, lastNames)
+				&& dataValidator.validateNotNull(firstNames, lastNames))
 		{
 			List<Person> people = new ArrayList<Person>();
 			// assumption : arrays are the same length
