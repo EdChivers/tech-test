@@ -98,7 +98,7 @@ public class FileBackedDataStore implements DataStore {
 		
 		List<Person> updatedStoreData = data;
 		
-		if (writeToFile(data))
+		if (!writeToFile(data))
 		{
 			// update failed, return values from store
 			updatedStoreData = readData();
